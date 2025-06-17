@@ -1,0 +1,288 @@
+swagger: '2.0'
+info:
+  title: "Mechanic Shop API"
+  description: "API to manage a Mechanic Shop"
+  version: "1.0.0"
+host: "127.0.0.1:5000"
+schemes:
+  - "http"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+paths:
+  /customers:
+    get:
+      summary: Get all customers
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Customers
+      description: Retrieve a paginated list of all customers.
+      parameters:
+      - name: page
+        in: query
+        description: Page number for pagination
+        required: false
+        type: integer
+      - name: per_page
+        in: query
+        description: Number of results per page
+        required: false
+        type: integer
+  /customers/login:
+    post:
+      summary: Customer login
+      responses:
+        '200':
+          description: Token issued
+      tags:
+      - Authentication
+      description: Log in a customer and return a JWT token.
+      parameters:
+      - in: body
+        name: body
+        description: Customer login credentials
+        required: true
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+            password:
+              type: string
+          required:
+          - email
+          - password
+  /mechanics:
+    get:
+      summary: List all mechanics
+      responses:
+        '200':
+          description: OK
+      tags:
+      - Mechanics
+      description: Get a list of all registered mechanics.
+  /service-tickets:
+    post:
+      summary: Create a service ticket
+      tags:
+      - ServiceTickets
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            issue:
+              type: string
+            customer_id:
+              type: integer
+      responses:
+        '201':
+          description: Ticket created
+  /customers/{id}:
+    put:
+      summary: Update a customer
+      tags:
+      - Customers
+      description: Update customer details by ID.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+            password:
+              type: string
+      responses:
+        '200':
+          description: Customer updated successfully
+      security:
+      - Bearer: []
+    delete:
+      summary: Delete a customer
+      tags:
+      - Customers
+      description: Delete a customer by ID.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: Customer deleted
+      security:
+      - Bearer: []
+  /mechanics/{id}:
+    get:
+      summary: Get mechanic by ID
+      tags:
+      - Mechanics
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: Mechanic object
+          schema:
+            type: object
+    put:
+      summary: Update mechanic
+      tags:
+      - Mechanics
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            specialty:
+              type: string
+      responses:
+        '200':
+          description: Mechanic updated
+      security:
+      - Bearer: []
+    delete:
+      summary: Delete mechanic
+      tags:
+      - Mechanics
+      parameters:
+      - name: id
+        in: path
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: Mechanic deleted
+      security:
+      - Bearer: []
+  /service-tickets/{ticket_id}:
+    get:
+      summary: Get ticket by ID
+      tags:
+      - ServiceTickets
+      parameters:
+      - name: ticket_id
+        in: path
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: Service ticket details
+    delete:
+      summary: Delete service ticket
+      tags:
+      - ServiceTickets
+      parameters:
+      - name: ticket_id
+        in: path
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: Service ticket deleted
+      security:
+      - Bearer: []
+  /service-tickets/{ticket_id}/assign-mechanic/{mechanic_id}:
+    put:
+      summary: Assign mechanic to ticket
+      tags:
+      - ServiceTickets
+      parameters:
+      - name: ticket_id
+        in: path
+        required: true
+        type: integer
+      - name: mechanic_id
+        in: path
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: Mechanic assigned to ticket
+  /service-tickets/{ticket_id}/remove-mechanic/{mechanic_id}:
+    put:
+      summary: Remove mechanic from ticket
+      tags:
+      - ServiceTickets
+      parameters:
+      - name: ticket_id
+        in: path
+        required: true
+        type: integer
+      - name: mechanic_id
+        in: path
+        required: true
+        type: integer
+      responses:
+        '200':
+          description: Mechanic removed from ticket
+tags:
+- name: Customers
+  description: Operations related to customers
+- name: Mechanics
+  description: Operations related to mechanics
+- name: ServiceTickets
+  description: Manage service tickets
+- name: Authentication
+  description: Login and access control
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+    description: 'JWT Authorization header using the Bearer scheme.'
+definitions:
+  Customer:
+    type: object
+    properties:
+      name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+  Login:
+    type: object
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+  Mechanic:
+    type: object
+    properties:
+      name:
+        type: string
+      specialty:
+        type: string
+  ServiceTicket:
+    type: object
+    properties:
+      issue:
+        type: string
+      customer_id:
+        type: integer
