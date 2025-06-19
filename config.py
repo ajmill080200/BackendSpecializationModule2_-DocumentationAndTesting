@@ -4,9 +4,14 @@ class DevelopmentConfig:
     DEBUG = True
     
 class TestingConfig:
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///testing.db'
+    TESTING = True
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
     CACHE_TYPE = 'SimpleCache'
+    RATELIMIT_ENABLED = False 
+    SECRET_KEY = 'test_secret'
+
 
 class ProductionConfig:
     pass
