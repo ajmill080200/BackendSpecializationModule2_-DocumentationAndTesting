@@ -1,3 +1,4 @@
+import os
 
 class DevelopmentConfig:
     SQLALCHEMY_DATABASE_URI = f'mysql+mysqlconnector://root:Harper213#!@localhost/mechanic_shop_db'
@@ -12,6 +13,7 @@ class TestingConfig:
     RATELIMIT_ENABLED = False 
     SECRET_KEY = 'test_secret'
 
-
 class ProductionConfig:
-    pass
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
+    CACHE_TYPE = 'SimpleCache'
+    
